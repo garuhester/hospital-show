@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/js/jquery.min.js"></script>
+    <title>医院导入</title>
+</head>
+
+<body>
+    <button onclick="getXLS()">导入xls</button>
+    <script>
+        function getXLS() {
+            $.ajax({
+                method: 'post',
+                url: '/xls',
+                success: function(data) {
+                    console.log(data.title);
+                    console.log(data.content);
+                    console.table(data.sheet);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

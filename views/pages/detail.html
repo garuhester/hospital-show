@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/main.css">
+    <title>简介</title>
+    <style>
+        #index .info {
+            padding: 10px 25px 30px 25px;
+        }
+
+        #index .hosname {
+            height: 30px;
+            line-height: 30px;
+            position: relative;
+            padding: 5px;
+        }
+
+        #index .hosname img {
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+            left: 5px;
+            padding: 4px 10px 4px 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="index">
+        <div class="bg">
+            <img src="/img/bg.png" alt="">
+        </div>
+        <div style="padding-top:15px;">
+            <div class="hosname">
+                <img src="./img/back.png" alt="" onclick="tomyurl('/index?' + hospital)"><%= data.title %>
+            </div>
+        </div>
+        <div class="info wordbreak">
+            <% for(var i=0;i<data.contents.length;i++){ %>
+            <div class="content">
+                <%= data.contents[i] %>
+            </div>
+            <% } %>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

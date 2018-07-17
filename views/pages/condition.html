@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <title>查看病况</title>
+    <style>
+        #index {
+            height: 100%;
+        }
+
+        #index .info {
+            padding: 10px 25px 30px 25px;
+        }
+
+        #index .hosname {
+            height: 30px;
+            line-height: 30px;
+            position: relative;
+            padding: 5px;
+        }
+
+        #index .hosname img {
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+            left: 5px;
+            padding: 4px 10px 4px 10px;
+            box-sizing: border-box;
+        }
+
+        .select {
+            height: calc(100% - 55px);
+            font-size: 0;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .select .search {
+            height: 40px;
+            font-size: 0;
+            position: relative;
+        }
+
+        .select .search input {
+            height: 40px;
+            background: #fff;
+            border-radius: 7px;
+            float: left;
+            border: none;
+            outline: none;
+            width: 75%;
+            font-size: 17px;
+            padding-left: 36px;
+            box-sizing: border-box;
+        }
+
+        .select .search button {
+            height: 40px;
+            float: right;
+            background: #fff;
+            border-radius: 7px;
+            width: 20%;
+            border: none;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .select .search button:active {
+            background: rgb(245, 245, 245);
+        }
+
+        .select .search .sea {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translate(0, -50%);
+            height: 20px;
+        }
+
+        .select .items {
+            background: #fff;
+            height: calc(100% - 55px);
+            border-radius: 7px;
+            margin-top: 15px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .items .left {
+            float: left;
+            width: 40%;
+            height: 100%;
+            background: #EEF7FB;
+            border-radius: 7px 0 0 7px;
+            box-sizing: border-box;
+            overflow-y: scroll;
+        }
+
+        .items .right {
+            float: right;
+            width: 60%;
+            height: 100%;
+            border-radius: 0 7px 7px 0;
+            box-sizing: border-box;
+            overflow-y: scroll;
+        }
+
+        .items .left .keshi {
+            padding: 10px 10px 10px 13px;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        .items .left .keshi:first-child {
+            border-radius: 7px 0 0 0;
+        }
+
+        .items .left .keshi:last-child {
+            border-radius: 0 0 0 7px;
+        }
+
+        .items .left .keshi.active {
+            background: #fff;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .items .left .keshi.active::after {
+            content: '';
+            display: block;
+            background: url("/img/arrow.png") no-repeat center;
+            height: 15px;
+            width: 15px;
+            background-size: 10px;
+            position: absolute;
+            top: 50%;
+            left: 6px;
+            transform: translate(0, -50%);
+        }
+
+        .items .left .keshi.active img {
+            height: 12px;
+        }
+
+        .items .right .bing {
+            padding: 10px 10px 10px 13px;
+            box-sizing: border-box;
+        }
+
+        .items .right .bing:active {
+            background: rgb(245, 245, 245);
+        }
+
+        .sitems {
+            position: absolute;
+            bottom: -160px;
+            left: 0;
+            background: #fff;
+            width: 100%;
+            height: 150px;
+            z-index: 999;
+            box-shadow: 0 3px 15px rgba(10, 10, 10, 0.2);
+            border-radius: 7px;
+            font-size: 1rem;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .sitems .sitem {
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .sitems .sitem:active {
+            background: rgb(245, 245, 245);
+        }
+
+        .close {
+            position: absolute;
+            bottom: -160px;
+            right: 0;
+            background: #fff;
+            width: 60px;
+            height: 30px;
+            line-height: 30px;
+            z-index: 999;
+            box-shadow: 0 3px 15px rgba(10, 10, 10, 0.2);
+            border-radius: 0 0 7px 0;
+            font-size: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .close:active {
+            background: rgb(245, 245, 245);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="index">
+        <div class="bg">
+            <img src="/img/bg.png" alt="">
+        </div>
+        <div style="padding-top:15px;">
+            <div class="hosname">
+                <img src="./img/back.png" alt="" onclick="tomyurl('/index?' + hospital)">查看病况
+            </div>
+        </div>
+        <div class="select">
+            <div class="search">
+                <input id="searchstr" type="text" placeholder="搜索病情">
+                <button onclick="search()">搜索</button>
+                <img class="sea" src="/img/search.png" alt="">
+                <div class="sitems">
+                    <!-- <div class="sitem">asdasd</div> -->
+                </div>
+                <div class="close">关闭</div>
+            </div>
+            <div class="items">
+                <div class="left">
+                    <!-- <div class="keshi active">内科</div> -->
+                </div>
+                <div class="right">
+                    <!-- <div class="bing">肺炎</div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+    <script>
+        var left = document.querySelector(".select .items .left");
+        var right = document.querySelector(".select .items .right");
+        var box = document.querySelector(".sitems");
+        var close = document.querySelector(".close");
+        close.onclick = function () {
+            box.style.display = "none";
+            close.style.display = "none";
+        }
+
+        function search() {
+            var searchstr = document.getElementById("searchstr").value.trim();
+            var allData = [];
+            var result = [];
+            for (b in bing) {
+                for (var i = 0; i < bing[b].length; i++) {
+                    allData.push(bing[b][i]);
+                }
+            }
+            var re = new RegExp(searchstr, "g");
+            box.innerHTML = "";
+            for (var i = 0; i < allData.length; i++) {
+                if (re.test(allData[i])) {
+                    result.push(allData[i]);
+                }
+            }
+            if(result.length != 0){
+                for (var i = 0; i < result.length; i++) {
+                    box.innerHTML += "<div class='sitem' onclick='rightClick(this)'>" + result[i] + "</div>";
+                }
+            }else{
+                box.innerHTML = "<div class='sitem'>无数据</div>";
+            }
+            box.style.display = "block";
+            close.style.display = "block";
+        }
+
+        var bing = {};
+        var keshis = [];
+
+        // var keshis = ["内科", "外科", "妇科", "男科", "皮肤科", "肝病科", "骨科"];
+
+        // var bing = {
+        //     "内科": ["肺炎", "高血压", "慢性支气管炎"],
+        //     "外科": ["慢性阑尾炎"],
+        //     "妇科": ["阴道炎"],
+        //     "男科": ["前列腺炎"],
+        //     "皮肤科": ["黄褐斑"],
+        //     "肝病科": ["肝硬化"],
+        //     "骨科": ["腰间盘突出"]
+        // }
+
+        new Promise(function (resolve, reject) {
+            $.ajax({
+                method: 'POST',
+                url: '/postHospitalData',
+                data: {
+                    hospital: decodeURIComponent(json.hospital)
+                },
+                success: function (data) {
+                    bing = data.result.bing;
+                    keshis = data.result.keshis;
+                    resolve(1);
+                }
+            });
+        }).then(function (data) {
+            initLeft();
+            initRight();
+            initLeftClick();
+        });
+
+
+        function rightClick(obj) {
+            var keshiactiveval = document.querySelector(".keshi.active").innerHTML;
+            tomyurl('/disease?' + hospital + '&keshi=' + keshiactiveval + '&bingqing=' + obj.innerHTML)
+        }
+
+        function initLeft() {
+            left.innerHTML = "";
+            for (var i = 0; i < keshis.length; i++) {
+                if (i == 0) {
+                    left.innerHTML += `<div class='keshi active'>${keshis[i]}</div>`;
+                } else {
+                    left.innerHTML += `<div class='keshi'>${keshis[i]}</div>`;
+                }
+            }
+        }
+
+        function initRight() {
+            var keshiactive = document.querySelector(".keshi.active");
+            right.innerHTML = "";
+            for (var i = 0; i < bing[keshiactive.innerHTML].length; i++) {
+                right.innerHTML += `<div class="bing" onclick="rightClick(this)">${bing[keshiactive.innerHTML][i]}</div>`;
+            }
+        }
+
+        function initLeftClick() {
+            var keshisDiv = document.querySelectorAll(".keshi");
+            for (var i = 0; i < keshisDiv.length; i++) {
+                (function (i) {
+                    keshisDiv[i].onclick = function () {
+                        for (var i = 0; i < keshisDiv.length; i++) {
+                            keshisDiv[i].className = "keshi";
+                        }
+                        this.className += " active";
+                        right.innerHTML = "";
+                        for (var i = 0; i < bing[this.innerHTML].length; i++) {
+                            right.innerHTML += `<div class="bing" onclick="rightClick(this)">${bing[this.innerHTML][i]}</div>`;
+                        }
+                    }
+                })(i);
+            }
+        }
+    </script>
+</body>
+
+</html>

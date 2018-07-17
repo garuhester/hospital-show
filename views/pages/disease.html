@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <title>查看病况</title>
+    <style>
+        #index {
+            height: 100%;
+        }
+
+        #index .info {
+            padding: 10px 25px 30px 25px;
+        }
+
+        #index .hosname {
+            height: 30px;
+            line-height: 30px;
+            position: relative;
+            padding: 5px;
+        }
+
+        #index .hosname img {
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+            left: 5px;
+            padding: 4px 10px 4px 10px;
+            box-sizing: border-box;
+        }
+
+        .details {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .detail .title {
+            padding: 13px 15px 13px 35px;
+            background: #fff;
+            position: relative;
+        }
+
+        .detail .title::after {
+            content: '';
+            display: block;
+            background: url("/img/arrow.png") no-repeat center;
+            height: 15px;
+            width: 15px;
+            background-size: 12px;
+            position: absolute;
+            top: 50%;
+            left: 13px;
+            transform: translate(0, -50%);
+        }
+
+        .detail .content {
+            padding: 20px;
+            background: #EEF7FB;
+        }
+
+        .details .detail:first-child .title {
+            border-radius: 7px 7px 0 0;
+        }
+
+        .details .detail:last-child .content {
+            border-radius: 0 0 7px 7px;
+        }
+
+        .infoa {
+            margin-top: 10px;
+        }
+
+        .detail .content .infoa:first-child {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="index">
+        <div class="bg">
+            <img src="/img/bg.png" alt="">
+        </div>
+        <div style="padding-top:15px;">
+            <div class="hosname">
+                <img src="./img/back.png" alt="" onclick="tomyurl('/condition?' + hospital)">
+                <%= data.bingqing %>
+            </div>
+        </div>
+        <div class="details">
+            <div class="detail d1">
+                <div class="title">疾病及简介</div>
+                <div class="content wordbreak">
+                    <% for(var i=0;i<data.info1.length;i++){ %>
+                        <div class="infoa">
+                            <%= data.info1[i] %>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+            <div class="detail d2">
+                <div class="title">预防和治疗</div>
+                <div class="content wordbreak">
+                    <% for(var i=0;i<data.info2.length;i++){ %>
+                        <div class="infoa">
+                            <%= data.info2[i] %>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+            <div class="detail d3">
+                <div class="title">食疗</div>
+                <div class="content wordbreak">
+                    <% for(var i=0;i<data.info3.length;i++){ %>
+                        <div class="infoa">
+                            <%= data.info3[i] %>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/mdui-v0.4.1/css/mdui.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.qrcode.min.js"></script>
+    <script type="text/javascript" src="/mdui-v0.4.1/js/mdui.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.form.min.js"></script>
+    <!-- <script type="text/javascript" src="/js/xlsx.full.min.js"></script>
+    <script type="text/javascript" src="/js/Blob.js"></script>
+    <script type="text/javascript" src="/js/FileSaver.js"></script> -->
+    <title>医院展示后台</title>
+    <style>
+        body, html {
+            margin:0;
+            padding:0;
+            height:100%;
+        }
+        .qrcode {
+            position: relative;
+        }
+        .ewm {
+            display: none;
+            position: absolute;
+            bottom: -250px;
+            left: 0;
+            height: 250px;
+            width: 250px;
+            background: #fff;
+            box-shadow: 0px 0 12px rgba(0,0,0,0.2);
+            border-radius: 7px;
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: 999;
+        }
+        .ewm.active {
+            display: block;
+        }
+
+        tbody a {
+            text-decoration: none;
+            color: rgb(40, 144, 241);
+            font-weight: bold;
+        }
+        tbody a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body class="mdui-appbar-with-toolbar">
+    <!-- 头部 -->
+    <header class="mdui-appbar mdui-appbar-fixed mdui-color-blue-a400" id="content-header">
+        <div class="mdui-toolbar">
+            <a href="/admin" class="mdui-typo-headline mdui-hidden-xs">医院展示后台 -
+                <span style="font-size: 16px;">第
+                    <%= data.currentPage %>页/共
+                        <%= data.allPage %>页</span>
+            </a>
+            <% if(parseInt(data.currentPage) == 1){ %>
+                <a>
+                    <button class="mdui-btn mdui-color-blue-a200 mdui-ripple mdui-center" onclick="urlopen('<%= data.goto %>1')">
+                        上一页</button>
+                </a>
+                <% }else{ %>
+                    <a>
+                        <button class="mdui-btn mdui-color-blue-a200 mdui-ripple mdui-center" onclick="urlopen('<%= data.goto %><%= parseInt(data.currentPage) - 1 %>')">
+                            上一页</button>
+                    </a>
+                    <% } %>
+                        <% if(parseInt(data.currentPage) == parseInt(data.allPage)){ %>
+                            <a>
+                                <button class="mdui-btn mdui-color-blue-a200 mdui-ripple mdui-center" onclick="urlopen('<%= data.goto %><%= data.allPage %>')">
+                                    下一页</button>
+                            </a>
+                            <% }else{ %>
+                                <a>
+                                    <button class="mdui-btn mdui-color-blue-a200 mdui-ripple mdui-center" onclick="urlopen('<%= data.goto %><%= parseInt(data.currentPage) + 1 %>')">下一页</button>
+                                </a>
+                                <% } %>
+                                    <a>
+                                        <button class="mdui-btn mdui-color-blue-a200 mdui-ripple mdui-center" mdui-dialog="{target: '#page-dialog'}">
+                                            跳转</button>
+                                    </a>
+                                    <div class="mdui-toolbar-spacer"></div>
+                                    <a href="javascript:;" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '导入Excel'}" onclick="getXLS()">
+                                        <i class="mdui-icon material-icons">&#xe3ba;</i>
+                                    </a>
+                                    <form id="uploadform" action="/xls" method="post" enctype="multipart/form-data">
+                                        <input id="xlschoose" name="xls" id="file" type="file" accept=".xls,.xlsx" hidden onchange="uploadXls()">
+                                    </form>
+                                    
+        </div>
+    </header>
+    <!-- 内容 -->
+    <div class="mdui-container mdui-m-t-3 mdui-m-b-3">
+        <table id="ques-table" class="mdui-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>医院名称</th>
+                    <th>医院展示链接</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <% 
+                if(data.hosp.length != 0){
+                    for(var i=0; i<data.hosp.length;i++){ 
+                        var h = data.hosp[i];
+                    %>
+                    <tr>
+                        <td>
+                            <%= i+1 %>
+                        </td>
+                        <td>
+                            <%= h.title %>
+                        </td>
+                        <td>
+                             <!-- http://service.wewin.com.cn:8035 -->
+                            <a href="http://192.168.10.101:8081/index?hospital=<%= h.title %>&startp=0" target="_blank">打开网页</a>
+                            <div class="qrcode">
+                                <a href="http://192.168.10.101:8081/index?hospital=<%= h.title %>&startp=0" onclick="createQrcode(this)" class="<%= h._id %>">查看二维码</a>
+                                <div id="ewm<%= h._id %>" class="ewm"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button id="<%= h._id %>" class="mdui-btn mdui-color-blue-accent mdui-ripple" onclick="delHospital(this)">删除</button>
+                        </td>
+                    </tr>
+                    <% }}else{ %>
+                        <tr>
+                            <td>
+                                无查询数据
+                            </td>
+                        </tr>
+                        <% } %>
+            </tbody>
+        </table>
+    </div>
+    <div class="mdui-dialog" id="page-dialog">
+        <div class="mdui-dialog-content">
+            <div class="mdui-textfield mdui-textfield-floating-label">
+                <label class="mdui-textfield-label">请输入页码</label>
+                <input class="mdui-textfield-input input-page" min="1" max="<%= data.allPage %>" type="number" />
+            </div>
+        </div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-close>取消</button>
+            <button class="mdui-btn mdui-ripple" onclick="gotoPage()">跳转</button>
+        </div>
+    </div>
+
+    <script>
+
+        document.body.onclick = function(){
+            $(".ewm").removeClass("active");
+        }
+        $(".ewm").click(function(){
+            window.event.preventDefault();
+            window.event.stopPropagation();
+        });
+
+        function createQrcode(obj){
+            window.event.preventDefault();
+            window.event.stopPropagation();
+            var a = obj.className.trim();
+            $("#ewm" + a).toggleClass("active");
+            $(".ewm").text("");
+            jQuery('.ewm').qrcode({
+                render: "canvas",
+                width: 230,
+                height: 230,
+                text: obj.href
+            });
+        }
+
+        function uploadXls(){
+            $('#uploadform').ajaxSubmit({
+                success(data) {
+                    if (data.result == 1) {
+                        // console.log(data.title);
+                        // console.log(data.content);
+                        // console.table(data.sheet);
+                        alert("导入成功");
+                        window.location.reload();
+                    } else if (data.result == 0) {
+                        alert("已有该医院");
+                    }
+                }
+            });
+        }
+
+        function getXLS() {
+            $("#xlschoose").click();
+        }
+
+        function delHospital(obj) {
+            mdui.confirm('是否要删除该医院的信息', '消息', function () {
+                $.ajax({
+                    method: "post",
+                    url: "/delHospital",
+                    data: {
+                        hid: obj.id
+                    },
+                    success: function (data) {
+                        if (data.result == 1) {
+                            alert("删除成功");
+                            window.location.reload();
+                        }
+                    }
+                });
+            }, function () { }, {
+                    confirmText: "确定",
+                    cancelText: "取消"
+                });
+        }
+
+        function exportExcel(page, type, fn, dl) {
+            event.preventDefault();
+            var elt = document.getElementById('ques-table');
+            var wb = XLSX.utils.table_to_book(elt, { sheet: "Sheet JS" });
+            return dl ?
+                XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                XLSX.writeFile(wb, fn || ('报名第' + page + '页.' + (type || 'xlsx')));
+        }
+
+        function gotoPage() {
+            var page = $(".input-page").val();
+            urlopen("<%= data.goto %>" + page);
+        }
+
+        function urlopen(url) {
+            window.location.href = url;
+        }
+    </script>
+</body>
+
+</html>

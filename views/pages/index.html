@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/jquery.min.js"></script>
+    <title>首页</title>
+    <style>
+        #start {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: -1;
+        }
+
+        #index {
+            display: none;
+        }
+
+        #start .hosname {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            padding: 5px;
+            padding-top: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="start">
+        <div class="bg">
+            <img src="/img/start.png" alt="">
+        </div>
+        <div class="hosname">
+            <%= data.title %>
+        </div>
+        <!-- <div class="logo">
+            <img class="i1" src="/img/logo1.png" alt="">
+            <img class="i2" src="/img/logo2.png" alt="">
+        </div> -->
+    </div>
+    <div id="index">
+        <div class="bg">
+            <img src="/img/bg.png" alt="">
+        </div>
+        <div class="hosname">
+            <%= data.title %>
+        </div>
+        <!-- <div class="logo">
+            <img class="i1" src="/img/logo1.png" alt="">
+            <img class="i2" src="/img/logo2.png" alt="">
+        </div> -->
+        <div class="info wordbreak">
+            <div class="title">
+                <%= data.title %>简介：</div>
+            <div class="content ell8">
+                <%= data.content %>
+            </div>
+            <div class="more">
+                <a onclick="tomyurl('./detail?' + hospital)">了解更多...</a>
+            </div>
+        </div>
+        <div class="btn">
+            <button class="into" onclick="tomyurl('/condition?' + hospital)">查看病况</button>
+        </div>
+    </div>
+    <script src="/js/main.js"></script>
+    <script>
+        var start = document.getElementById("start");
+        var index = document.getElementById("index");
+        if (json.startp == 0) {
+            init();
+        } else {
+            index.style.display = "block";
+        }
+        function init() {
+            start.style.display = "block";
+            setTimeout(function () {
+                start.style.display = "none";
+                index.style.display = "block";
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>
